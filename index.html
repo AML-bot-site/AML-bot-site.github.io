@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow">
+
+  <title>AML Bot — Automated Crypto Anti-Money Laundering Screening Tools (2026)</title>
+  <meta name="description" content="AML bot guide (2026): how automated anti-money laundering bots screen crypto wallets in real time, what risk categories they detect, how to integrate AML bot APIs into VASP workflows, tool comparison, false positive handling, and best practices for compliance teams.">
+  <meta name="author" content="Crypto Finance Experts">
+  <link rel="canonical" href="https://aml-bot.example.com/">
+  <link rel="icon" type="image/png" href="Tornado.jpg">
+
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://aml-bot.example.com/">
+  <meta property="og:title" content="AML Bot — Automated Crypto Anti-Money Laundering Screening (2026)">
+  <meta property="og:description" content="How AML bots screen crypto wallets in real time: risk categories, API integration, tool comparison, and best practices.">
+  <meta property="og:image" content="cover.png">
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:title" content="AML Bot — Automated Crypto Screening (2026)">
+  <meta property="twitter:description" content="Practical AML bot guide: real-time wallet screening, risk categories, API integration, and compliance best practices.">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "AML Bot — Automated Crypto Anti-Money Laundering Screening Tools (2026)",
+    "description": "How AML bots screen crypto wallets in real time: risk categories, API integration, tool comparison, false positive handling, and VASP best practices.",
+    "author": { "@type": "Organization", "name": "Crypto Finance Experts", "url": "https://aml-bot.example.com/" },
+    "publisher": { "@type": "Organization", "name": "Crypto Finance Experts" },
+    "datePublished": "2026-03-18",
+    "dateModified": "2026-03-18",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://aml-bot.example.com/" }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://aml-bot.example.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Compliance Guides", "item": "https://aml-bot.example.com/guides/" },
+      { "@type": "ListItem", "position": 3, "name": "AML Bot", "item": "https://aml-bot.example.com/aml-bot/" }
+    ]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is an AML bot and how does it work?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "An AML bot is an automated software tool that screens crypto wallet addresses and transactions in real time against a blockchain analytics database. When a deposit or withdrawal is initiated, the bot queries the analytics API, receives a risk score with a category breakdown, compares it against pre-configured thresholds, and triggers an automated action — allow, flag for review, or block — without human intervention. This enables VASPs to screen every transaction at scale while maintaining a complete audit trail."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What risk categories does an AML bot detect?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "AML bots detect exposure to: sanctioned entities (OFAC SDN list), cryptocurrency tumblers and mixers, darknet marketplace wallets, ransomware payment addresses, fraud and scam operations, unregulated P2P exchanges, and high-risk jurisdictions. Each category triggers a different automated response based on the configured risk policy — sanction exposure typically triggers an automatic block; indirect P2P exposure may only trigger a review queue."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    :root {
+      /* Forest Green + Lime */
+      --primary: #166534;
+      --primary-600: #14532D;
+      --primary-700: #0F3D21;
+      --accent: #84CC16;
+      --accent-soft: #D9F99D;
+
+      --ink: #F7FEE7;
+      --muted: #A1A1AA;
+      --muted-2: #71717A;
+
+      --bg: #010A03;
+      --panel: #031407;
+      --panel-2: #051C0A;
+      --line: rgba(255,255,255,.10);
+
+      --ok: #22C55E;
+      --warn: #F59E0B;
+      --error: #EF4444;
+
+      --shadow: 0 18px 44px rgba(0,0,0,.60);
+      --radius: 14px;
+      --radius-lg: 22px;
+      --gap: 1.25rem;
+      --gap-lg: 2rem;
+    }
+
+    * { box-sizing: border-box }
+    html, body { height: 100% }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+      color: var(--muted);
+      background:
+        radial-gradient(900px 600px at 12% 0%,  rgba(22,101,52,.22), transparent 60%),
+        radial-gradient(900px 600px at 88% 12%, rgba(132,204,22,.07), transparent 60%),
+        radial-gradient(900px 600px at 50% 90%, rgba(20,83,45,.16), transparent 60%),
+        linear-gradient(180deg, #010801 0%, #010A03 50%, #010801 100%);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--accent); text-decoration: none }
+    a:hover { text-decoration: underline }
+    img { max-width: 100%; height: auto; display: block }
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 1.25rem }
+
+    h1,h2,h3,h4 { color: var(--ink); line-height: 1.25; margin: 0 0 .6rem }
+    h1 { font-size: clamp(2rem,4.5vw,3.1rem); font-weight: 950; letter-spacing: .2px }
+    h2 { font-size: clamp(1.35rem,2.8vw,2rem); margin-top: 2.2rem; padding-top: .6rem; border-top: 1px solid var(--line) }
+    h3 { font-size: clamp(1.05rem,2.2vw,1.3rem); color: var(--accent-soft) }
+    p, li, td, th { font-size: 1rem }
+    .lead { font-size: 1.125rem; color: #ECFCCB }
+    .muted { color: var(--muted) }
+    .muted-2 { color: var(--muted-2) }
+
+    .breadcrumb { padding: .7rem 0; font-size: .85rem; color: var(--muted-2) }
+    .breadcrumb a { color: var(--muted); font-weight: 600 }
+    .breadcrumb a:hover { color: var(--accent) }
+    .breadcrumb span { margin: 0 .4rem; opacity: .5 }
+
+    .meta-bar { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: .75rem; font-size: .83rem; color: var(--muted-2) }
+    .meta-bar time { font-weight: 700; color: var(--accent-soft) }
+
+    header.hero {
+      padding: clamp(2rem,6vw,4rem) 0;
+      background:
+        radial-gradient(700px 420px at 18% 10%, rgba(22,101,52,.26), transparent 60%),
+        radial-gradient(700px 420px at 90% 20%, rgba(132,204,22,.09), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.03), transparent 55%);
+      border-bottom: 1px solid var(--line);
+    }
+    .hero-grid { display: grid; gap: var(--gap-lg); grid-template-columns: 1fr }
+    .hero-card {
+      background: linear-gradient(180deg, rgba(5,28,10,.88), rgba(3,20,7,.72));
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: clamp(1rem,3vw,1.75rem);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+    .brand-row { display: flex; align-items: center; gap: .9rem; margin-bottom: .75rem }
+    .brand-logo {
+      width: 54px; height: 54px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.06);
+      padding: .35rem; object-fit: contain;
+      box-shadow: 0 10px 22px rgba(0,0,0,.40);
+      flex: 0 0 auto;
+    }
+
+    /* CTA */
+    .cta-wrap { display: flex; justify-content: center; margin-top: 1.5rem }
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #16A34A 0%, #166534 55%, #4D7C0F 100%);
+      color: #fff;
+      padding: 1.05rem 3rem;
+      border-radius: 14px;
+      font-weight: 900;
+      font-size: 1.15rem;
+      letter-spacing: .4px;
+      box-shadow:
+        0 0 0 1px rgba(132,204,22,.28),
+        0 8px 24px rgba(22,101,52,.50),
+        0 20px 48px rgba(22,101,52,.22);
+      border: 1px solid rgba(255,255,255,.18);
+      transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .cta:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow:
+        0 0 0 2px rgba(132,204,22,.45),
+        0 12px 32px rgba(22,101,52,.60),
+        0 28px 60px rgba(22,101,52,.28);
+      filter: brightness(1.1);
+      text-decoration: none;
+    }
+
+    .note {
+      border-left: 3px solid var(--accent);
+      padding: .75rem 1rem;
+      background: rgba(132,204,22,.07);
+      border-radius: 10px;
+      color: #ECFCCB;
+    }
+
+    section.step-guide { padding: clamp(2rem,6vw,3.5rem) 0 }
+    .steps { display: grid; gap: var(--gap); grid-template-columns: 1fr }
+    .step {
+      background: linear-gradient(180deg, rgba(5,28,10,.82), rgba(3,20,7,.66));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1.2rem;
+      box-shadow: 0 12px 26px rgba(0,0,0,.50);
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .step:hover { transform: translateY(-4px); box-shadow: 0 18px 34px rgba(0,0,0,.60) }
+    .step .icon {
+      width: 54px; height: 54px; border-radius: 50%;
+      display: inline-grid; place-items: center;
+      background: rgba(22,101,52,.22);
+      margin-bottom: .6rem; color: var(--accent-soft);
+      font-weight: 950;
+      border: 1px solid rgba(255,255,255,.10);
+    }
+
+    main .card {
+      background: linear-gradient(180deg, rgba(5,28,10,.74), rgba(3,20,7,.60));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      margin: 1.25rem 0;
+      box-shadow: 0 12px 26px rgba(0,0,0,.50);
+    }
+
+    .grid-2 { display: grid; gap: var(--gap); grid-template-columns: 1fr }
+    .pillbar { display: flex; flex-wrap: wrap; gap: .6rem; margin: .75rem 0 0 }
+    .pill { border: 1px solid var(--line); background: rgba(255,255,255,.05); padding: .4rem .65rem; border-radius: 999px; font-weight: 800; color: #ECFCCB }
+
+    .toc { border: 1px solid var(--line); background: linear-gradient(180deg, rgba(22,101,52,.10), rgba(255,255,255,.02)); border-radius: var(--radius); padding: 1rem }
+    .toc strong { color: var(--ink) }
+    .toc ul { margin: .5rem 0 0; padding-left: 1.1rem }
+    .toc li { margin: .25rem 0 }
+    .toc a { font-weight: 800; color: var(--accent) }
+
+    table { width: 100%; border-collapse: collapse; overflow: hidden; border-radius: 12px }
+    th, td { padding: .9rem; border-bottom: 1px solid var(--line) }
+    th { background: rgba(22,101,52,.12); color: var(--ink); text-align: left }
+    tr.highlight { background: rgba(22,101,52,.08) }
+    tr:hover { background: rgba(255,255,255,.03) }
+
+    .ok { color: var(--ok) } .warn { color: var(--warn) } .err { color: var(--error) }
+
+    .eeat { background: linear-gradient(180deg, rgba(22,101,52,.10), rgba(255,255,255,.02)); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.25rem; box-shadow: 0 12px 26px rgba(0,0,0,.50) }
+
+    .faq-item { border-bottom: 1px solid var(--line); padding: .9rem 0 }
+    .faq-button { all: unset; display: flex; justify-content: space-between; align-items: center; width: 100%; cursor: pointer; padding: .3rem 0 }
+    .faq-button:focus-visible { outline: 2px solid var(--accent) }
+    .faq-button h3 { margin: 0; font-weight: 950 }
+    .faq-content { max-height: 0; overflow: hidden; transition: max-height .28s ease }
+    .faq-content.open { padding-top: .6rem }
+    .faq-plus { font-weight: 950; color: var(--accent-soft); font-size: 1.1rem; flex-shrink: 0; margin-left: .75rem }
+
+    .callout-grid { display: grid; gap: var(--gap); grid-template-columns: 1fr; margin-top: .75rem }
+    .mini { background: rgba(255,255,255,.03); border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem }
+    .mini h3 { margin-bottom: .35rem }
+    .kpi-badges { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: .5rem }
+    .kpi-badges span { border: 1px solid rgba(22,101,52,.28); background: rgba(22,101,52,.12); color: var(--accent-soft); padding: .3rem .55rem; border-radius: 999px; font-weight: 900; font-size: .9rem }
+
+    .stat-block { display: flex; flex-wrap: wrap; gap: var(--gap); margin: 1rem 0 }
+    .stat { flex: 1; min-width: 140px; background: rgba(22,101,52,.10); border: 1px solid rgba(132,204,22,.16); border-radius: var(--radius); padding: .9rem 1rem; text-align: center }
+    .stat-num { display: block; font-size: 1.75rem; font-weight: 950; color: var(--accent); line-height: 1.1 }
+    .stat-lbl { font-size: .82rem; color: var(--muted); margin-top: .25rem }
+
+    .risk-row { display: flex; align-items: center; gap: .75rem; margin: .4rem 0 }
+    .risk-lbl { min-width: 90px; font-size: .85rem; font-weight: 700; color: var(--accent-soft) }
+    .risk-track { flex: 1; height: 6px; background: rgba(255,255,255,.08); border-radius: 99px; overflow: hidden }
+    .risk-fill { height: 100%; border-radius: 99px }
+    .risk-fill.low  { background: linear-gradient(90deg,#15803D,#22C55E); width: 25% }
+    .risk-fill.med  { background: linear-gradient(90deg,#B45309,#F59E0B); width: 55% }
+    .risk-fill.high { background: linear-gradient(90deg,#7F1D1D,#EF4444); width: 88% }
+    .risk-val { min-width: 55px; text-align: right; font-size: .82rem; font-weight: 800 }
+
+    @media (min-width: 860px) {
+      .steps { grid-template-columns: repeat(4,1fr) }
+      .grid-2 { grid-template-columns: 1fr 1fr }
+      .callout-grid { grid-template-columns: 1fr 1fr }
+    }
+  </style>
+</head>
+<body>
+
+<header class="hero" role="banner">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a><span>›</span>
+      <a href="/guides/">Compliance Guides</a><span>›</span>
+      <span aria-current="page">AML Bot</span>
+    </nav>
+
+    <div class="hero-grid">
+      <div class="hero-card" aria-label="Intro">
+        <div class="meta-bar">
+          <span>By <strong>Crypto Finance Experts</strong></span>
+          <span>·</span>
+          <time datetime="2026-03-18">March 18, 2026</time>
+          <span>·</span>
+          <span>8 min read</span>
+        </div>
+
+        <div class="brand-row">
+          <img class="brand-logo"
+               src="Tornado.jpg"
+               alt="AML Bot compliance reference"
+               width="54" height="54">
+          <div>
+            <div class="muted" style="font-weight:900;letter-spacing:.2px;">Operational Guide</div>
+            <div class="muted-2" style="font-size:.95rem;">Automated Screening&nbsp;•&nbsp;Real-Time API&nbsp;•&nbsp;Risk Scoring&nbsp;•&nbsp;VASP Compliance</div>
+          </div>
+        </div>
+
+        <h1>AML Bot: Automated Crypto Anti-Money Laundering Screening (2026)</h1>
+        <p class="lead">
+          A practical guide to AML bots — automated tools that screen crypto wallet addresses
+          in real time at every deposit and withdrawal. How they work, what risk categories
+          they detect, how to integrate them via API into VASP workflows, and how to configure
+          them to minimise false positives without creating compliance gaps.
+        </p>
+
+        <div class="cta-wrap">
+          <a href="https://en.wikipedia.org/wiki/Cryptocurrency_tumbler"
+             class="cta" target="_blank" rel="noopener" aria-label="AML Bot">
+            AML Bot
+          </a>
+        </div>
+
+        <div class="note" style="margin-top:1.25rem;">
+          <strong>Key principle:</strong> An AML bot enforces your compliance policy consistently at scale —
+          but its output is only as good as the risk thresholds configured into it.
+          A bot set to block all medium-score addresses will generate excessive false positives.
+          A bot set too permissively will miss genuine risks. The policy calibration,
+          not the tool itself, determines compliance quality.
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="step-guide" aria-labelledby="workflow-title">
+  <div class="container">
+    <h2 id="workflow-title">How an AML Bot Works: Trigger → Query → Score → Act</h2>
+    <div class="steps" role="list">
+      <article class="step" role="listitem">
+        <div class="icon">①</div>
+        <h3>Transaction triggers the bot</h3>
+        <p>A deposit or withdrawal event fires an API call containing the wallet address, blockchain network, and transaction amount. The bot intercepts every transaction — not a random sample.</p>
+      </article>
+      <article class="step" role="listitem">
+        <div class="icon">②</div>
+        <h3>Query sent to analytics provider</h3>
+        <p>The bot queries Chainalysis, Elliptic, TRM Labs, or Crystal Blockchain via API. The provider traces the address's fund flows to known entity clusters and returns a risk score with a full category breakdown in under two seconds.</p>
+      </article>
+      <article class="step" role="listitem">
+        <div class="icon">③</div>
+        <h3>Score compared to policy thresholds</h3>
+        <p>The bot compares the category breakdown against your pre-configured risk matrix. Sanction exposure → automatic block. Direct mixer exposure above threshold → block and flag for SAR review. Indirect P2P → queue for analyst review. Clean → allow.</p>
+      </article>
+      <article class="step" role="listitem">
+        <div class="icon">④</div>
+        <h3>Action logged to audit trail</h3>
+        <p>Every decision — allow, review, or block — is logged with the timestamp, address, score, category breakdown, and the policy rule applied. This creates the audit trail regulators examine during examinations.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<main class="container" role="main">
+<article>
+
+  <section class="card toc" aria-label="Table of Contents">
+    <strong>On this page (AML Bot):</strong>
+    <ul>
+      <li><a href="#overview">What an AML bot is and who uses one</a></li>
+      <li><a href="#stats">AML bot context: illicit crypto activity at scale</a></li>
+      <li><a href="#how-it-works">How AML bot screening works on-chain</a></li>
+      <li><a href="#risk-categories">AML bot risk categories and automated responses</a></li>
+      <li><a href="#integration">AML bot API integration: what to build</a></li>
+      <li><a href="#tools">AML bot provider comparison</a></li>
+      <li><a href="#false-positives">Managing AML bot false positives</a></li>
+      <li><a href="#legal">Regulatory context: when an AML bot is required</a></li>
+      <li><a href="#comparison">AML bot vs manual screening: when to use each</a></li>
+      <li><a href="#best-practices">Best practices for AML bot configuration</a></li>
+      <li><a href="#troubleshooting">Troubleshooting AML bot issues</a></li>
+      <li><a href="#eeat">Sources &amp; references</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+  </section>
+
+  <section class="card" id="overview">
+    <h2>What an AML Bot Is — and Who Uses One</h2>
+    <p>
+      An AML bot is an automated software component that screens crypto wallet addresses
+      and transactions against a blockchain analytics database in real time — without human
+      intervention at the point of screening. It sits between the transaction initiation event
+      and the execution layer, checking every deposit and withdrawal against a configured
+      risk policy before allowing the transaction to proceed.
+    </p>
+
+    <div class="pillbar">
+      <span class="pill">Real-Time Screening</span>
+      <span class="pill">API Integration</span>
+      <span class="pill">Risk Policy Enforcement</span>
+      <span class="pill">Audit Trail</span>
+      <span class="pill">VASP Compliance</span>
+    </div>
+
+    <div class="callout-grid" role="list">
+      <div class="mini" role="listitem">
+        <h3>Primary users: high-volume VASPs</h3>
+        <p class="muted">Centralised exchanges, payment processors, OTC desks, and neobanks processing thousands of transactions per day cannot rely on manual review for every check. An AML bot enforces consistent screening policy at any volume with a complete, timestamped audit trail for every decision.</p>
+        <div class="kpi-badges"><span>Exchanges</span><span>Payment processors</span><span>Neobanks</span></div>
+      </div>
+      <div class="mini" role="listitem">
+        <h3>Secondary users: DeFi protocols and wallets</h3>
+        <p class="muted">DeFi frontends, non-custodial wallet apps, and cross-chain bridges increasingly deploy AML bots at the connection layer — screening wallet addresses before allowing users to interact with the protocol. This is a voluntary risk management measure in most jurisdictions, though regulatory pressure is increasing.</p>
+        <div class="kpi-badges"><span>DeFi frontends</span><span>Wallet apps</span><span>Bridges</span></div>
+      </div>
+    </div>
+
+    <div class="note" style="margin-top:1rem;">
+      <strong>What an AML bot is not:</strong> It is not a KYC system (it does not verify identity), not a Travel Rule solution (it does not transmit originator/beneficiary data), and not a SAR filing tool. It is the transaction monitoring component of a broader AML programme — one that must work alongside identity verification, sanctions screening, and reporting workflows.
+    </div>
+  </section>
+
+  <section class="card" id="stats">
+    <h2>AML Bot Context: The Scale of Illicit Crypto Activity</h2>
+
+    <div class="stat-block" aria-label="Key statistics">
+      <div class="stat">
+        <span class="stat-num">$24.2B</span>
+        <div class="stat-lbl">Illicit crypto volume in 2023<br><small>Chainalysis 2024 Report</small></div>
+      </div>
+      <div class="stat">
+        <span class="stat-num">72%</span>
+        <div class="stat-lbl">Illicit crypto passing through VASPs<br><small>FATF 2024 evaluations</small></div>
+      </div>
+      <div class="stat">
+        <span class="stat-num">&lt;2s</span>
+        <div class="stat-lbl">Typical AML bot API response time<br><small>Major analytics providers</small></div>
+      </div>
+      <div class="stat">
+        <span class="stat-num">100%</span>
+        <div class="stat-lbl">Transaction coverage with API bot<br><small>vs. gaps in manual review</small></div>
+      </div>
+    </div>
+
+    <div class="note">
+      The 72% figure is why VASPs are the primary regulatory focus for crypto AML — most illicit funds touch a VASP at some point. An AML bot running at every transaction is the only practical way to screen that volume consistently. Data source: <a href="https://www.chainalysis.com/reports/crypto-crime-report/" target="_blank" rel="noopener nofollow">Chainalysis 2024 Crypto Crime Report</a>.
+    </div>
+  </section>
+
+  <section class="card" id="how-it-works">
+    <h2>How AML Bot Screening Works On-Chain</h2>
+    <p>
+      An AML bot does not analyse transactions itself — it calls an analytics provider's API
+      that maintains the entity database. Understanding the underlying mechanics helps configure
+      the bot's thresholds correctly.
+    </p>
+
+    <div class="callout-grid">
+      <div class="mini">
+        <h3>Entity cluster matching</h3>
+        <p class="muted">Analytics providers maintain databases of wallet address clusters attributed to known entities — exchanges, darknet markets, ransomware groups, and <a href="https://en.wikipedia.org/wiki/Cryptocurrency_tumbler" target="_blank" rel="noopener nofollow">cryptocurrency tumblers</a>. When the bot submits an address, the API calculates what share of that address's fund flows have been proximate to each entity cluster and returns a scored breakdown.</p>
+        <div class="kpi-badges"><span>Entity clusters</span><span>Fund flow analysis</span><span>Category breakdown</span></div>
+      </div>
+      <div class="mini">
+        <h3>Hop distance weighting</h3>
+        <p class="muted">Direct interaction (1 hop) with a high-risk cluster carries far more weight than indirect exposure at 2–3 hops via a legitimate exchange intermediary. AML bots that block on overall score alone without reading hop distance produce disproportionate false positive rates — the category breakdown and hop distance must both feed the decision logic.</p>
+        <div class="kpi-badges"><span>1 hop = direct</span><span>2+ hops = indirect</span><span>Volume × distance</span></div>
+      </div>
+    </div>
+
+    <div class="note">
+      <strong>Limitation:</strong> Heuristic clustering is probabilistic. False positives occur for CoinJoin users, shared exchange hot wallets, and recently re-attributed clusters. Build a human review queue for medium-score results rather than automated blocking — the bot flags, the analyst decides.
+    </div>
+  </section>
+
+  <section class="card" id="risk-categories">
+    <h2>AML Bot Risk Categories and Automated Responses</h2>
+
+    <div style="margin:.75rem 0">
+      <div class="risk-row"><span class="risk-lbl">Low (0–25)</span><div class="risk-track"><div class="risk-fill low"></div></div><span class="risk-val ok">Auto-allow</span></div>
+      <div class="risk-row"><span class="risk-lbl">Medium (26–74)</span><div class="risk-track"><div class="risk-fill med"></div></div><span class="risk-val warn">Review queue</span></div>
+      <div class="risk-row"><span class="risk-lbl">High (75–100)</span><div class="risk-track"><div class="risk-fill high"></div></div><span class="risk-val err">Auto-block</span></div>
+    </div>
+
+    <table aria-label="AML bot risk categories and responses">
+      <thead>
+        <tr><th>Category detected</th><th>Severity</th><th>Automated bot response</th></tr>
+      </thead>
+      <tbody>
+        <tr class="highlight">
+          <td><strong>Sanctioned entity (OFAC SDN)</strong></td>
+          <td class="err">Critical</td>
+          <td>Auto-block; route to SAR filing queue; no analyst override permitted</td>
+        </tr>
+        <tr>
+          <td><strong>Mixer / tumbler</strong></td>
+          <td class="err">High</td>
+          <td>Auto-block above configured volume threshold; request source of funds</td>
+        </tr>
+        <tr class="highlight">
+          <td><strong>Darknet market</strong></td>
+          <td class="err">High</td>
+          <td>Auto-block; route to SAR queue</td>
+        </tr>
+        <tr>
+          <td><strong>Ransomware</strong></td>
+          <td class="err">High</td>
+          <td>Auto-block; SAR filing; flag for legal review</td>
+        </tr>
+        <tr class="highlight">
+          <td><strong>Fraud / scam</strong></td>
+          <td class="warn">Medium–High</td>
+          <td>Route to analyst queue; enhanced due diligence before decision</td>
+        </tr>
+        <tr>
+          <td><strong>Unregulated P2P</strong></td>
+          <td class="warn">Medium</td>
+          <td>Route to review queue; source-of-funds documentation request</td>
+        </tr>
+        <tr class="highlight">
+          <td><strong>Regulated exchange</strong></td>
+          <td class="ok">Low</td>
+          <td>Auto-allow; log and proceed</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="note">
+      <strong>Configuration rule:</strong> The bot's category-response matrix must be written and approved by your compliance officer before deployment. Never use vendor defaults as your compliance policy — they are a starting point calibrated to a generic risk appetite, not yours.
+    </div>
+  </section>
+
+  <section class="card" id="integration">
+    <h2>AML Bot API Integration: What to Build</h2>
+    <p>
+      Integrating an AML bot requires connecting your transaction processing layer to an
+      analytics provider's API and building the logic to act on the response.
+    </p>
+    <ul>
+      <li><strong>Webhook or synchronous call:</strong> for deposits, a synchronous pre-transaction check (block before execution) is ideal. For withdrawals, a pre-processing check prevents funds leaving before screening. Asynchronous post-transaction scanning is lower friction but creates a window where illicit funds may have already moved.</li>
+      <li><strong>Response handling:</strong> parse the risk score and category breakdown from the API response. Your logic should branch on category type first, then score — not score alone. Store the full response JSON as part of the transaction record.</li>
+      <li><strong>Action states:</strong> implement three clear states — auto-allow (log and proceed), review queue (hold transaction, notify analyst), and auto-block (reject transaction, log reason, route to SAR workflow if applicable).</li>
+      <li><strong>Latency management:</strong> major analytics APIs respond in under two seconds. Build a timeout fallback — if the API does not respond within your SLA, decide in advance whether to fail-open (allow with flag) or fail-closed (hold pending response). Document the choice and its compliance rationale.</li>
+      <li><strong>Audit log:</strong> every API call, response, decision, and any subsequent analyst action must be stored with full timestamps. This is the compliance record — not a debug log.</li>
+    </ul>
+
+    <div class="note">
+      <strong>Architecture tip:</strong> Run AML bot checks asynchronously where transaction confirmation latency allows — this avoids adding API latency to user-facing transaction times. For high-value withdrawals, a synchronous pre-check is worth the latency.
+    </div>
+  </section>
+
+  <section class="card" id="tools">
+    <h2>AML Bot Provider Comparison: APIs and Coverage</h2>
+
+    <table aria-label="AML bot provider comparison">
+      <thead>
+        <tr><th>Provider</th><th>API type</th><th>Chain coverage</th><th>Best for</th></tr>
+      </thead>
+      <tbody>
+        <tr class="highlight">
+          <td><strong>Chainalysis KYT</strong></td>
+          <td>REST API, webhooks</td>
+          <td>BTC, ETH, Tron, SOL, 20+</td>
+          <td>Large exchanges; institutions; forensic quality</td>
+        </tr>
+        <tr>
+          <td><strong>Elliptic Navigator</strong></td>
+          <td>REST API</td>
+          <td>BTC, ETH, DeFi, cross-chain</td>
+          <td>DeFi protocols; cross-chain operations</td>
+        </tr>
+        <tr class="highlight">
+          <td><strong>TRM Labs</strong></td>
+          <td>REST API, webhooks</td>
+          <td>30+ chains</td>
+          <td>Mid-market VASPs; wide chain coverage</td>
+        </tr>
+        <tr>
+          <td><strong>Crystal Blockchain</strong></td>
+          <td>REST API</td>
+          <td>BTC, ETH, ERC-20</td>
+          <td>EU VASPs; BTC-focused compliance</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="note">
+      For critical AML bot decisions, consider routing high-score results through a second provider's API to reduce false positives from single-vendor attribution errors. Methodology: <a href="https://www.chainalysis.com/reports/crypto-crime-report/" target="_blank" rel="noopener nofollow">Chainalysis</a> · <a href="https://www.elliptic.co/resources" target="_blank" rel="noopener nofollow">Elliptic</a>.
+    </div>
+  </section>
+
+  <section class="card" id="false-positives">
+    <h2>Managing AML Bot False Positives</h2>
+    <p>
+      False positives — legitimate transactions blocked by the bot — are the most common
+      operational complaint with AML bot deployments. They damage user experience
+      and create legal exposure if not handled correctly.
+    </p>
+
+    <div class="callout-grid">
+      <div class="mini">
+        <h3>Common false positive causes</h3>
+        <p class="muted">
+          CoinJoin transactions whose structure resembles mixer activity. Large exchange withdrawals where the hot wallet has indirect exposure from thousands of other users. Newly re-attributed clusters where a previously-neutral address is now scored against a newly-identified illicit entity. Over-broad score thresholds that block all medium-score results regardless of category.
+        </p>
+        <div class="kpi-badges"><span>CoinJoin</span><span>Shared hot wallets</span><span>Re-attribution</span></div>
+      </div>
+      <div class="mini">
+        <h3>Reducing false positives without gaps</h3>
+        <p class="muted">
+          Route medium-score results to a human review queue rather than auto-blocking. Configure per-category thresholds rather than a single score cutoff. Request source-of-funds documentation before blocking on indirect exposure. Track and report your false positive rate quarterly — above 10–15% of blocked transactions being cleared signals miscalibrated thresholds.
+        </p>
+        <div class="kpi-badges"><span>Per-category thresholds</span><span>Review queue</span><span>Track FP rate</span></div>
+      </div>
+    </div>
+
+    <div class="note">
+      Build a documented dispute resolution SLA — typically 3–5 business days — with a clear process for users to submit source-of-funds evidence. This protects both legitimate users and your organisation from wrongful account closure claims.
+    </div>
+  </section>
+
+  <section class="card" id="legal">
+    <h2>Regulatory Context: When an AML Bot Is Required</h2>
+    <ul>
+      <li><strong>FATF Recommendation 15:</strong> VASPs must apply ongoing transaction monitoring — which regulators interpret to mean real-time or near-real-time screening at every material transaction. An AML bot running via API is the standard implementation of this obligation for high-volume operations. Full guidance at <a href="https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Recommendations.html" target="_blank" rel="noopener nofollow">fatf-gafi.org</a>.</li>
+      <li><strong>EU Transfer of Funds Regulation (TFR):</strong> no minimum threshold — every transfer requires compliance checks. Manual review at this volume is operationally impossible for any meaningful exchange.</li>
+      <li><strong>US FinCEN / BSA:</strong> MSBs dealing in virtual currency must maintain an effective AML programme including transaction monitoring. An AML bot is not specifically mandated by name, but real-time monitoring is the practical standard expected in examinations. See <a href="https://www.fincen.gov/resources/statutes-regulations/guidance/application-fincens-regulations-certain-business-models" target="_blank" rel="noopener nofollow">fincen.gov</a>.</li>
+    </ul>
+
+    <div class="note">
+      FATF mutual evaluation rounds in 2023–2024 cited "inadequate transaction monitoring" as the most common AML deficiency in VASP assessments globally. An AML bot is the primary tool for satisfying this obligation at scale.
+    </div>
+  </section>
+
+  <section class="card" id="comparison">
+    <h2>AML Bot vs Manual Screening: When to Use Each</h2>
+
+    <table aria-label="AML bot vs manual screening comparison">
+      <thead>
+        <tr><th>Approach</th><th>Best for</th><th>Pros</th><th>Cons</th></tr>
+      </thead>
+      <tbody>
+        <tr class="highlight">
+          <td><strong>AML bot (real-time API)</strong></td>
+          <td>High-volume VASPs; automated compliance</td>
+          <td>100% coverage; consistent policy; full audit trail; no human gaps</td>
+          <td>Integration cost; requires codified risk policy; latency management</td>
+        </tr>
+        <tr>
+          <td><strong>Manual (dashboard)</strong></td>
+          <td>Low volume; forensic investigations; edge cases</td>
+          <td>Analyst context; flexible interpretation; no integration needed</td>
+          <td>Doesn't scale; coverage gaps; inconsistent decisions</td>
+        </tr>
+        <tr class="highlight">
+          <td><strong>Batch re-screening</strong></td>
+          <td>Periodic review of existing user wallets</td>
+          <td>Catches newly-attributed risk in updated databases</td>
+          <td>Lagging — not real-time; requires scheduling</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="note">
+      The right answer for most regulated VASPs is all three — an AML bot for real-time transaction screening, batch re-screening for existing user wallets, and manual review for the analyst queue generated by medium-score results.
+    </div>
+  </section>
+
+  <section class="card" id="best-practices">
+    <h2>Best Practices for AML Bot Configuration and Operation</h2>
+    <ul>
+      <li><strong>Write the risk policy matrix before configuring the bot.</strong> Which category at which hop distance triggers which action. Vendor defaults are a starting point — your compliance officer must own the final thresholds.</li>
+      <li><strong>Configure per-category responses, not a single score cutoff.</strong> Sanction exposure → auto-block at any score. Indirect P2P at 3+ hops → review queue only. Category-specific logic dramatically reduces false positives.</li>
+      <li><strong>Never auto-block the entire medium-score band.</strong> Route medium scores to a review queue where an analyst applies judgment. Blanket medium-score blocking generates excessive false positives and potential wrongful account closure liability.</li>
+      <li><strong>Log everything — every API call, response, and decision.</strong> The audit trail is the compliance deliverable. Logs must include timestamps, full API response JSON, the decision taken, and which policy rule was applied.</li>
+      <li><strong>Test the bot on known addresses before go-live.</strong> Run a sample set of addresses with known risk profiles — clean addresses, known mixer interactions, sanctioned wallets — through the full bot pipeline and verify the actions match your configured policy.</li>
+      <li><strong>Monitor the false positive rate quarterly.</strong> Above 10–15% of blocked transactions being cleared indicates overconfigured thresholds. Adjust the matrix, retrain analysts, and retest.</li>
+    </ul>
+
+    <div class="note">
+      <strong>Most common deployment mistake:</strong> Setting the auto-block threshold to cover the entire medium-score range to "be safe." This produces 3–5× the necessary false positives and creates operational chaos. Safe means proportionate — blocking only what your policy actually requires blocking.
+    </div>
+  </section>
+
+  <section class="card" id="troubleshooting">
+    <h2>Troubleshooting Common AML Bot Issues</h2>
+
+    <h3>"Bot is blocking too many legitimate transactions"</h3>
+    <ul>
+      <li>Review the category breakdown of blocked transactions — if most blocks are driven by indirect P2P at 2+ hops rather than direct illicit exposure, your score threshold is too low. Raise the auto-block threshold and route the released range to the review queue instead.</li>
+      <li>Check whether CoinJoin addresses are being blocked wholesale — consider adding a CoinJoin-specific exception path that routes to review rather than auto-block if the only exposure is CoinJoin at indirect distance.</li>
+    </ul>
+
+    <h3>"Bot API is timing out intermittently"</h3>
+    <ul>
+      <li>Implement exponential backoff retry logic with a maximum of 2–3 retries. Define a clear fail-open or fail-closed policy for persistent timeouts — document whichever you choose and the compliance rationale for it.</li>
+      <li>Evaluate whether your analytics provider's SLA matches your transaction volume. Some providers offer priority API tiers for high-volume clients with guaranteed latency.</li>
+    </ul>
+
+    <h3>"Score changed on an existing user address without any new transactions"</h3>
+    <ul>
+      <li>Analytics databases are updated continuously — a previously-clean cluster can be re-attributed to a newly-identified illicit entity. Your batch re-screening process should catch these retroactive changes. Document the score change with both values and dates, and assess whether the updated attribution warrants a compliance review of the existing relationship.</li>
+    </ul>
+
+    <div class="note">
+      <strong>Best diagnostic approach:</strong> Pull the full API response for any anomalous block and trace the specific entities and hop distances that generated the score. "Bot blocked address X" becomes "address X has 8% direct exposure to cluster Y at 1 hop — bot correctly applied policy rule Z." Specific is defensible; vague is not.
+    </div>
+  </section>
+
+  <section class="eeat" id="eeat" aria-labelledby="eeat-title">
+    <h2 id="eeat-title">AML Bot: Sources &amp; Authoritative References</h2>
+
+    <div class="grid-2">
+      <div>
+        <h3>Regulatory standards</h3>
+        <ul>
+          <li><a href="https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Recommendations.html" target="_blank" rel="noopener nofollow">FATF — The 40 Recommendations (Rec. 15: VASP transaction monitoring)</a></li>
+          <li><a href="https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Guidance-RBA-virtual-assets-2021.html" target="_blank" rel="noopener nofollow">FATF — Risk-Based Approach Guidance for Virtual Assets</a></li>
+          <li><a href="https://www.fincen.gov/resources/statutes-regulations/guidance/application-fincens-regulations-certain-business-models" target="_blank" rel="noopener nofollow">FinCEN — BSA Application to Virtual Currency</a></li>
+          <li><a href="https://ofac.treasury.gov/sanctions-programs-and-country-information" target="_blank" rel="noopener nofollow">OFAC — Sanctions Programs &amp; SDN List</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Industry research &amp; tools</h3>
+        <ul>
+          <li><a href="https://www.chainalysis.com/reports/crypto-crime-report/" target="_blank" rel="noopener nofollow">Chainalysis — 2024 Crypto Crime Report (statistics source)</a></li>
+          <li><a href="https://www.elliptic.co/resources" target="_blank" rel="noopener nofollow">Elliptic — Typologies Reports &amp; Methodology</a></li>
+          <li><a href="https://www.trmlabs.com/blog" target="_blank" rel="noopener nofollow">TRM Labs — Blockchain Intelligence Research</a></li>
+          <li><a href="https://crystalblockchain.com/resources/" target="_blank" rel="noopener nofollow">Crystal Blockchain — Compliance Resources</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Cryptocurrency_tumbler" target="_blank" rel="noopener nofollow">Wikipedia — Cryptocurrency Tumbler (technical reference)</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="note" style="margin-top:1rem;">
+      <strong>About:</strong> Prepared by Crypto Finance Experts. Covers AML bot mechanics, API integration, risk categories, provider comparison, false positive management, regulatory requirements, and troubleshooting. Updated <time datetime="2026-03-18">March 18, 2026</time>. Not legal advice.
+    </div>
+  </section>
+
+  <section class="card faq-section" aria-labelledby="faq">
+    <h2 id="faq">AML Bot: Frequently Asked Questions</h2>
+
+    <div class="faq-item">
+      <button class="faq-button" aria-expanded="false" aria-controls="f1" id="b1">
+        <h3>What is an AML bot and how does it work?</h3><span class="faq-plus">+</span>
+      </button>
+      <div id="f1" class="faq-content" role="region" aria-labelledby="b1">
+        <p>An AML bot is an automated software component that screens crypto wallet addresses and transactions in real time by calling a blockchain analytics API at every deposit and withdrawal. When a transaction is initiated, the bot sends the wallet address and chain to the analytics provider, receives a risk score and category breakdown, compares the result against a pre-configured risk matrix, and triggers an automated action — allow, hold for review, or block — without requiring human intervention at the point of screening.</p>
+        <p>The key difference from manual screening is scale and consistency: an AML bot screens 100% of transactions with identical policy enforcement and a complete timestamped audit log. Manual processes cover a fraction of transactions at best, introduce human inconsistency, and create audit trail gaps that regulators identify in examinations.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-button" aria-expanded="false" aria-controls="f2" id="b2">
+        <h3>What risk categories does an AML bot detect?</h3><span class="faq-plus">+</span>
+      </button>
+      <div id="f2" class="faq-content" role="region" aria-labelledby="b2">
+        <p>AML bots detect exposure to a range of risk categories returned by the analytics API: sanctioned entities (OFAC SDN list — requires immediate auto-block), cryptocurrency tumblers and mixers (high severity, block above volume threshold), darknet marketplace wallets (high severity, auto-block), ransomware payment addresses (high severity, auto-block and flag for SAR), fraud and scam wallets (medium-high, route to review), unregulated P2P exchanges (medium, enhanced due diligence), and gambling platforms (low-medium, jurisdiction-dependent).</p>
+        <p>The critical configuration principle is that the bot must respond differently to different categories — not apply the same action to all results above a single score threshold. A well-configured AML bot auto-blocks sanctions exposure at any score, routes indirect P2P to a review queue at medium scores, and auto-allows clean regulated exchange interactions regardless of any residual score.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-button" aria-expanded="false" aria-controls="f3" id="b3">
+        <h3>How do I integrate an AML bot into my platform?</h3><span class="faq-plus">+</span>
+      </button>
+      <div id="f3" class="faq-content" role="region" aria-labelledby="b3">
+        <p>Integration requires connecting your transaction processing layer to your chosen analytics provider's REST API and building the decision logic that acts on the response. For deposits, implement a pre-transaction synchronous API call that holds the transaction pending the screening result. For withdrawals, integrate the check into the withdrawal initiation flow before the transaction is broadcast to the blockchain.</p>
+        <p>Parse the full API response — not just the headline score — and build branching logic on category type and hop distance. Store the complete response JSON as part of the transaction record for the audit trail. Implement timeout handling with a documented fail-open or fail-closed policy. Test against a set of known-risk addresses before go-live to verify the bot's actions match your configured policy. Most major providers offer sandbox environments and developer documentation specifically for bot integration.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-button" aria-expanded="false" aria-controls="f4" id="b4">
+        <h3>Can an AML bot replace human compliance analysts?</h3><span class="faq-plus">+</span>
+      </button>
+      <div id="f4" class="faq-content" role="region" aria-labelledby="b4">
+        <p>No — an AML bot handles the screening and enforcement layer, but human analysts remain essential for medium-score review queue decisions, SAR filing, customer communication, dispute resolution, and regulatory examination responses. The bot ensures consistent policy enforcement at scale and generates the evidence analysts need. Analysts apply judgment to edge cases the bot cannot resolve algorithmically.</p>
+        <p>FATF guidance and most regulatory frameworks explicitly expect human oversight of automated AML systems — an AML programme composed entirely of automated decisions without human review capability is not considered compliant. The correct framing is: the AML bot handles the volume so analysts can focus their time on the cases that genuinely require judgment.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-button" aria-expanded="false" aria-controls="f5" id="b5">
+        <h3>How do I reduce AML bot false positives?</h3><span class="faq-plus">+</span>
+      </button>
+      <div id="f5" class="faq-content" role="region" aria-labelledby="b5">
+        <p>The most effective lever is per-category thresholds rather than a single score cutoff. Route medium-score results to a review queue rather than auto-blocking — the bot flags, the analyst decides. Configure higher tolerance for indirect exposure (2+ hops through legitimate intermediaries) and strict zero-tolerance only for direct sanction and darknet market exposure.</p>
+        <p>Track your false positive rate quarterly: what share of blocked transactions are subsequently cleared after analyst review? Above 10–15% suggests thresholds are overconfigured. Adjust the category-response matrix based on the actual breakdown of cleared blocks — if most are cleared due to indirect P2P exposure, raise the auto-block threshold for that specific category. Do not lower thresholds uniformly across all categories; adjust surgically by category type.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-button" aria-expanded="false" aria-controls="f6" id="b6">
+        <h3>Is an AML bot legally required?</h3><span class="faq-plus">+</span>
+      </button>
+      <div id="f6" class="faq-content" role="region" aria-labelledby="b6">
+        <p>No regulation specifically mandates an "AML bot" by name — but FATF Recommendation 15 requires VASPs to apply ongoing transaction monitoring, and regulators interpret this to mean real-time or near-real-time screening at every material transaction. For any VASP processing significant transaction volume, an automated API-based bot is the only practical way to meet this standard consistently. Manual review at hundreds of transactions per day is operationally unfeasible and leaves systematic coverage gaps that regulators identify.</p>
+        <p>FATF mutual evaluation rounds in 2023–2024 cited inadequate transaction monitoring as the most common AML deficiency in VASP assessments. An AML bot running continuously is what satisfies the ongoing monitoring obligation in practice.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-button" aria-expanded="false" aria-controls="f7" id="b7">
+        <h3>Which AML bot provider should I choose?</h3><span class="faq-plus">+</span>
+      </button>
+      <div id="f7" class="faq-content" role="region" aria-labelledby="b7">
+        <p>Match the provider to your primary chain exposure, volume, and integration needs. Chainalysis KYT is the market leader for large exchanges requiring forensic quality and regulatory defensibility — it has the broadest entity database and the strongest law enforcement relationships. Elliptic Navigator has stronger DeFi and cross-chain coverage. TRM Labs covers 30+ chains at competitive pricing. Crystal Blockchain is well-suited for European VASPs focused on Bitcoin compliance.</p>
+        <p>Before committing, test each shortlisted provider's API on addresses with known risk profiles — clean addresses, known mixer interactions, and sanctioned wallets. Compare the latency, the category breakdown accuracy, and the documentation quality. Well-documented methodology is important for regulatory defensibility: you need to be able to explain why your bot takes the actions it takes.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-button" aria-expanded="false" aria-controls="f8" id="b8">
+        <h3>How does an AML bot handle API timeouts?</h3><span class="faq-plus">+</span>
+      </button>
+      <div id="f8" class="faq-content" role="region" aria-labelledby="b8">
+        <p>Every AML bot deployment must define a timeout policy before go-live: fail-open (allow the transaction with a flag for later review if the API does not respond within the SLA) or fail-closed (hold the transaction until the API responds or a manual decision is made). Both choices have compliance implications — fail-open risks allowing illicit transactions during outages; fail-closed risks blocking legitimate transactions and creating customer friction during API issues.</p>
+        <p>Most compliance teams choose fail-open with mandatory batch re-screening of all transactions processed during the outage window. This approach is defensible to regulators when documented: "During API outage between X and Y, transactions were allowed with flagging and subsequently re-screened in the batch run of [date]." The key is having the policy documented before an outage occurs, not improvising during one.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-button" aria-expanded="false" aria-controls="f9" id="b9">
+        <h3>What should an AML bot audit log contain?</h3><span class="faq-plus">+</span>
+      </button>
+      <div id="f9" class="faq-content" role="region" aria-labelledby="b9">
+        <p>A complete AML bot audit log entry must include: the wallet address screened; the blockchain network; the transaction amount and direction (deposit or withdrawal); the exact timestamp of the API call; the analytics provider queried; the full API response including risk score, category breakdown, and hop distances; the policy rule applied; the automated action taken (allow, review queue, block); and — if the result entered the review queue — the analyst's decision, the rationale, and the timestamp of that decision.</p>
+        <p>This log is what regulators examine during AML programme reviews. It must be tamper-evident, retained for the required period (5 years under US BSA; varies by jurisdiction), and queryable — regulators will ask for specific date-range exports and want to be able to audit individual transaction decisions. Storing raw API response JSON alongside a structured decision record is the safest approach.</p>
+      </div>
+    </div>
+
+  </section>
+
+</article>
+</main>
+
+<footer class="container" role="contentinfo" style="padding:2rem 0;border-top:1px solid var(--line);margin-top:2rem">
+  <p class="muted">© 2026 AML Bot Guide. Educational content with compliance-first operational focus. Not legal advice. <time datetime="2026-03-18">March 18, 2026</time>.</p>
+</footer>
+
+<script>
+  document.querySelectorAll('.faq-button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const open = btn.getAttribute('aria-expanded') === 'true';
+      const body = document.getElementById(btn.getAttribute('aria-controls'));
+      btn.setAttribute('aria-expanded', String(!open));
+      btn.querySelector('.faq-plus').textContent = open ? '+' : '−';
+      body.style.maxHeight = open ? '0' : body.scrollHeight + 'px';
+      body.classList.toggle('open', !open);
+    });
+  });
+</script>
+
+</body>
+</html>
